@@ -220,7 +220,7 @@ export default function SettingsPanel({ data, onChange, onClose }: Props) {
 
               {data.recurringExpenses.length > 0 && (
                 <div className="space-y-2">
-                  <h3 className="text-sm font-medium text-gray-500">Recurring Expenses</h3>
+                  <h3 className="text-sm font-medium text-gray-500">Planned Expenses</h3>
                   {data.recurringExpenses.map((exp) => (
                     <div key={exp.id} className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2 border border-gray-100">
                       <div>

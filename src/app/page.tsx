@@ -35,7 +35,7 @@ export default function Home() {
 
   const now = new Date();
   const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-  const { days, totalAvailable, monthIncome, monthExpenses } = calculateMonthFlow(data, currentMonth.year, currentMonth.month);
+  const { days, totalAvailable, monthIncome, monthPlannedExpenses, monthUnplannedExpenses, maxRef } = calculateMonthFlow(data, currentMonth.year, currentMonth.month);
 
   const monthName = new Date(currentMonth.year, currentMonth.month).toLocaleDateString("en-US", { month: "long", year: "numeric" });
 
@@ -56,7 +56,7 @@ export default function Home() {
   }
 
   const endBalance = days.length > 0 ? days[days.length - 1].balance : data.startingBalance;
-  const totalSpent = days.reduce((s, d) => s + d.expenses, 0);
+  const totalSpent = days.reduce((s, d) => s + d.plannedExpenses + d.unplannedExpenses, 0);
 
   return (
     <main className="flex-1 p-4 max-w-2xl mx-auto w-full space-y-4">
@@ -85,7 +85,7 @@ export default function Home() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-4 gap-2">
         <div className="bg-white rounded-xl p-3 border border-gray-100 shadow-sm">
           <div className="text-xs text-gray-400">Available</div>
           <div className="text-lg font-bold text-teal-600">${totalAvailable.toLocaleString()}</div>
@@ -95,8 +95,12 @@ export default function Home() {
           <div className="text-lg font-bold text-emerald-500">+${monthIncome.toLocaleString()}</div>
         </div>
         <div className="bg-white rounded-xl p-3 border border-gray-100 shadow-sm">
-          <div className="text-xs text-gray-400">Expenses</div>
-          <div className="text-lg font-bold text-rose-400">-${monthExpenses.toLocaleString()}</div>
+          <div className="text-xs text-blue-400">Planned</div>
+          <div className="text-lg font-bold text-blue-500">-${monthPlannedExpenses.toLocaleString()}</div>
+        </div>
+        <div className="bg-white rounded-xl p-3 border border-gray-100 shadow-sm">
+          <div className="text-xs text-rose-400">Unplanned</div>
+          <div className="text-lg font-bold text-rose-400">-${monthUnplannedExpenses.toLocaleString()}</div>
         </div>
       </div>
 
@@ -123,13 +127,14 @@ export default function Home() {
 
       {/* Legend */}
       <div className="flex flex-wrap justify-center gap-3 text-xs text-gray-400 pb-4">
-        <span className="flex items-center gap-1"><span className="w-3 h-2 rounded-sm bg-green-600" /> Flush</span>
+        <span className="flex items-center gap-1"><span className="w-3 h-2 rounded-sm bg-green-600" /> Full</span>
         <span className="flex items-center gap-1"><span className="w-3 h-2 rounded-sm bg-emerald-500" /> Good</span>
         <span className="flex items-center gap-1"><span className="w-3 h-2 rounded-sm bg-amber-500" /> Low</span>
         <span className="flex items-center gap-1"><span className="w-3 h-2 rounded-sm bg-rose-500" /> Empty</span>
         <span className="mx-1 text-gray-300">|</span>
         <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> Income</span>
-        <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-rose-400" /> Expense</span>
+        <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-blue-400" /> Planned</span>
+        <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-rose-400" /> Unplanned</span>
       </div>
 
       {/* Modals */}

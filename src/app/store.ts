@@ -46,13 +46,28 @@ export function getDaysInMonth(year: number, month: number): string[] {
 /** Calculate the cumulative balance for each day of the month */
 export function calculateMonthFlow(data: MoneyFlowData, year: number, month: number) {
   const days = getDaysInMonth(year, month);
-  const results: { date: string; day: number; income: number; expenses: number; balance: number; fillPct: number }[] = [];
+  const results: { date: string; day: number; income: number; plannedExpenses: number; unplannedExpenses: number; expenses: number; balance: number; fillPct: number }[] = [];
 
-  // Get previous month ending balance
+  // Total planned expenses for the month — this is our 100% reference
+  const totalPlanned = data.recurringExpenses
+    .filter((e) => {
+      if (e.type === "recurring") return true;
+      if (e.date) return e.date.startsWith(`${year}-${String(month + 1).padStart(2, "0")}`);
+      return false;
+    })
+    .reduce((sum, e) => sum + e.amount, 0);
+
+  // The maxBalance is the total planned expenses — 100% = "enough to cover all planned expenses"
+  const maxRef = totalPlanned > 0 ? totalPlanned : (data.startingBalance + data.incomes
+    .filter((i) => {
+      if (i.type === "recurring") return true;
+      if (i.date) return i.date.startsWith(`${year}-${String(month + 1).padStart(2, "0")}`);
+      return false;
+    })
+    .reduce((sum, i) => sum + i.amount, 0)) || 1;
+
   let runningBalance = data.startingBalance;
 
-  // Add previous months' recurring income/expenses to get starting balance for this month
-  // For simplicity, use startingBalance as the baseline and calculate from day 1 of this month
   const monthIncome = data.incomes
     .filter((i) => {
       if (i.type === "recurring") return true;
@@ -61,16 +76,9 @@ export function calculateMonthFlow(data: MoneyFlowData, year: number, month: num
     })
     .reduce((sum, i) => sum + i.amount, 0);
 
-  const monthExpenses = data.recurringExpenses
-    .filter((e) => {
-      if (e.type === "recurring") return true;
-      if (e.date) return e.date.startsWith(`${year}-${String(month + 1).padStart(2, "0")}`);
-      return false;
-    })
-    .reduce((sum, e) => sum + e.amount, 0);
+  const monthPlannedExpenses = totalPlanned;
 
-  const totalAvailable = data.startingBalance + monthIncome;
-  const maxBalance = totalAvailable > 0 ? totalAvailable : 1;
+  let totalUnplanned = 0;
 
   for (const date of days) {
     const dayNum = parseInt(date.split("-")[2]);
@@ -84,8 +92,8 @@ export function calculateMonthFlow(data: MoneyFlowData, year: number, month: num
       })
       .reduce((sum, i) => sum + i.amount, 0);
 
-    // Recurring expenses for this day
-    const recurringExpense = data.recurringExpenses
+    // Planned (recurring) expenses for this day
+    const dayPlannedExpenses = data.recurringExpenses
       .filter((e) => {
         if (e.type === "recurring" && e.day === dayNum) return true;
         if (e.type === "one-time" && e.date === date) return true;
@@ -93,27 +101,42 @@ export function calculateMonthFlow(data: MoneyFlowData, year: number, month: num
       })
       .reduce((sum, e) => sum + e.amount, 0);
 
-    // Manual day entries
+    // Unplanned expenses (manual day entries)
     const entry = data.dayEntries[date];
-    const manualExpenses = entry ? entry.expenses.reduce((s, e) => s + e.amount, 0) : 0;
+    const dayUnplannedExpenses = entry ? entry.expenses.reduce((s, e) => s + e.amount, 0) : 0;
     const manualIncome = entry ? entry.income : 0;
 
+    totalUnplanned += dayUnplannedExpenses;
+
     const totalIncome = dayIncome + manualIncome;
-    const totalExpenses = recurringExpense + manualExpenses;
+    const totalExpenses = dayPlannedExpenses + dayUnplannedExpenses;
 
     runningBalance += totalIncome - totalExpenses;
 
-    const fillPct = Math.max(0, Math.min(100, (runningBalance / maxBalance) * 100));
+    // fillPct: 100% = planned expenses covered. Above 100% means surplus.
+    // Below 100% = balance can't cover all planned expenses.
+    const fillPct = maxRef > 0 ? (runningBalance / maxRef) * 100 : 0;
 
     results.push({
       date,
       day: dayNum,
       income: totalIncome,
+      plannedExpenses: dayPlannedExpenses,
+      unplannedExpenses: dayUnplannedExpenses,
       expenses: totalExpenses,
       balance: runningBalance,
       fillPct,
     });
   }
 
-  return { days: results, totalAvailable, monthIncome, monthExpenses, maxBalance };
+  const totalAvailable = data.startingBalance + monthIncome;
+
+  return {
+    days: results,
+    totalAvailable,
+    monthIncome,
+    monthPlannedExpenses,
+    monthUnplannedExpenses: totalUnplanned,
+    maxRef,
+  };
 }
