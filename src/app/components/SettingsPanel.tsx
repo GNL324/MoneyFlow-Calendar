@@ -63,20 +63,20 @@ export default function SettingsPanel({ data, onChange, onClose }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
-      <div className="bg-gray-900 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto border border-gray-700">
-        <div className="flex items-center justify-between p-4 border-b border-gray-700">
-          <h2 className="text-lg font-bold">MoneyFlow Settings</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-white text-2xl leading-none">&times;</button>
+    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto border border-gray-200 shadow-xl">
+        <div className="flex items-center justify-between p-4 border-b border-gray-100">
+          <h2 className="text-lg font-bold text-gray-800">MoneyFlow Settings</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-gray-700">
+        <div className="flex border-b border-gray-100">
           {tabs.map((t) => (
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
-              className={`flex-1 py-2 text-sm font-medium ${tab === t.key ? "text-emerald-400 border-b-2 border-emerald-400" : "text-gray-400"}`}
+              className={`flex-1 py-2 text-sm font-medium ${tab === t.key ? "text-teal-600 border-b-2 border-teal-500" : "text-gray-400"}`}
             >
               {t.label}
             </button>
@@ -87,20 +87,20 @@ export default function SettingsPanel({ data, onChange, onClose }: Props) {
           {/* Settings Tab */}
           {tab === "settings" && (
             <div className="space-y-3">
-              <label className="block text-sm text-gray-300">Starting Balance (current bank)</label>
+              <label className="block text-sm text-gray-600">Starting Balance (current bank)</label>
               <div className="flex gap-2">
                 <input
                   type="number"
                   value={balance}
                   onChange={(e) => setBalance(e.target.value)}
-                  className="flex-1 bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white"
+                  className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800"
                   placeholder="0.00"
                 />
-                <button onClick={saveBalance} className="bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded-lg font-medium">
+                <button onClick={saveBalance} className="bg-teal-500 hover:bg-teal-600 px-4 py-2 rounded-lg font-medium text-white shadow-sm">
                   Save
                 </button>
               </div>
-              <p className="text-xs text-gray-500">This is your balance at the start of the month. The calendar fills based on this + income - expenses.</p>
+              <p className="text-xs text-gray-400">This is your balance at the start of the month. The calendar fills based on this + income - expenses.</p>
             </div>
           )}
 
@@ -112,7 +112,7 @@ export default function SettingsPanel({ data, onChange, onClose }: Props) {
                   type="text"
                   value={newIncome.label}
                   onChange={(e) => setNewIncome({ ...newIncome, label: e.target.value })}
-                  className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800 placeholder-gray-400"
                   placeholder="Income label (e.g. Paycheck)"
                 />
                 <div className="flex gap-2">
@@ -120,13 +120,13 @@ export default function SettingsPanel({ data, onChange, onClose }: Props) {
                     type="number"
                     value={newIncome.amount}
                     onChange={(e) => setNewIncome({ ...newIncome, amount: e.target.value })}
-                    className="flex-1 bg-gray-800 border border-gray-600 rounded-lg px-3 py-2"
+                    className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800 placeholder-gray-400"
                     placeholder="Amount"
                   />
                   <select
                     value={newIncome.type}
                     onChange={(e) => setNewIncome({ ...newIncome, type: e.target.value as "recurring" | "one-time" })}
-                    className="bg-gray-800 border border-gray-600 rounded-lg px-3 py-2"
+                    className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800"
                   >
                     <option value="recurring">Monthly</option>
                     <option value="one-time">One-time</option>
@@ -134,35 +134,35 @@ export default function SettingsPanel({ data, onChange, onClose }: Props) {
                 </div>
                 {newIncome.type === "recurring" && (
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-gray-400">Day of month:</span>
+                    <span className="text-sm text-gray-500">Day of month:</span>
                     <input
                       type="number"
                       min="1"
                       max="31"
                       value={newIncome.day}
                       onChange={(e) => setNewIncome({ ...newIncome, day: e.target.value })}
-                      className="w-20 bg-gray-800 border border-gray-600 rounded-lg px-3 py-2"
+                      className="w-20 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800"
                     />
                   </div>
                 )}
-                <button onClick={addIncome} className="w-full bg-emerald-600 hover:bg-emerald-500 py-2 rounded-lg font-medium">
+                <button onClick={addIncome} className="w-full bg-emerald-500 hover:bg-emerald-600 py-2 rounded-lg font-medium text-white shadow-sm">
                   + Add Income
                 </button>
               </div>
 
               {data.incomes.length > 0 && (
                 <div className="space-y-2">
-                  <h3 className="text-sm font-medium text-gray-400">Current Income</h3>
+                  <h3 className="text-sm font-medium text-gray-500">Current Income</h3>
                   {data.incomes.map((inc) => (
-                    <div key={inc.id} className="flex items-center justify-between bg-gray-800 rounded-lg px-3 py-2">
+                    <div key={inc.id} className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2 border border-gray-100">
                       <div>
-                        <span className="text-white">{inc.label}</span>
-                        <span className="text-emerald-400 ml-2">${inc.amount.toLocaleString()}</span>
-                        <span className="text-gray-500 ml-2 text-xs">
+                        <span className="text-gray-700">{inc.label}</span>
+                        <span className="text-emerald-500 ml-2">${inc.amount.toLocaleString()}</span>
+                        <span className="text-gray-400 ml-2 text-xs">
                           {inc.type === "recurring" ? `Day ${inc.day}` : "One-time"}
                         </span>
                       </div>
-                      <button onClick={() => removeIncome(inc.id)} className="text-red-400 hover:text-red-300 text-sm">
+                      <button onClick={() => removeIncome(inc.id)} className="text-rose-300 hover:text-rose-500 text-sm">
                         ✕
                       </button>
                     </div>
@@ -180,7 +180,7 @@ export default function SettingsPanel({ data, onChange, onClose }: Props) {
                   type="text"
                   value={newExpense.label}
                   onChange={(e) => setNewExpense({ ...newExpense, label: e.target.value })}
-                  className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800 placeholder-gray-400"
                   placeholder="Expense label (e.g. Rent)"
                 />
                 <div className="flex gap-2">
@@ -188,13 +188,13 @@ export default function SettingsPanel({ data, onChange, onClose }: Props) {
                     type="number"
                     value={newExpense.amount}
                     onChange={(e) => setNewExpense({ ...newExpense, amount: e.target.value })}
-                    className="flex-1 bg-gray-800 border border-gray-600 rounded-lg px-3 py-2"
+                    className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800 placeholder-gray-400"
                     placeholder="Amount"
                   />
                   <select
                     value={newExpense.type}
                     onChange={(e) => setNewExpense({ ...newExpense, type: e.target.value as "recurring" | "one-time" })}
-                    className="bg-gray-800 border border-gray-600 rounded-lg px-3 py-2"
+                    className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800"
                   >
                     <option value="recurring">Monthly</option>
                     <option value="one-time">One-time</option>
@@ -202,35 +202,35 @@ export default function SettingsPanel({ data, onChange, onClose }: Props) {
                 </div>
                 {newExpense.type === "recurring" && (
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-gray-400">Day of month:</span>
+                    <span className="text-sm text-gray-500">Day of month:</span>
                     <input
                       type="number"
                       min="1"
                       max="31"
                       value={newExpense.day}
                       onChange={(e) => setNewExpense({ ...newExpense, day: e.target.value })}
-                      className="w-20 bg-gray-800 border border-gray-600 rounded-lg px-3 py-2"
+                      className="w-20 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800"
                     />
                   </div>
                 )}
-                <button onClick={addExpense} className="w-full bg-rose-600 hover:bg-rose-500 py-2 rounded-lg font-medium">
+                <button onClick={addExpense} className="w-full bg-rose-400 hover:bg-rose-500 py-2 rounded-lg font-medium text-white shadow-sm">
                   + Add Expense
                 </button>
               </div>
 
               {data.recurringExpenses.length > 0 && (
                 <div className="space-y-2">
-                  <h3 className="text-sm font-medium text-gray-400">Recurring Expenses</h3>
+                  <h3 className="text-sm font-medium text-gray-500">Recurring Expenses</h3>
                   {data.recurringExpenses.map((exp) => (
-                    <div key={exp.id} className="flex items-center justify-between bg-gray-800 rounded-lg px-3 py-2">
+                    <div key={exp.id} className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2 border border-gray-100">
                       <div>
-                        <span className="text-white">{exp.label}</span>
+                        <span className="text-gray-700">{exp.label}</span>
                         <span className="text-rose-400 ml-2">-${exp.amount.toLocaleString()}</span>
-                        <span className="text-gray-500 ml-2 text-xs">
+                        <span className="text-gray-400 ml-2 text-xs">
                           {exp.type === "recurring" ? `Day ${exp.day}` : "One-time"}
                         </span>
                       </div>
-                      <button onClick={() => removeExpense(exp.id)} className="text-red-400 hover:text-red-300 text-sm">
+                      <button onClick={() => removeExpense(exp.id)} className="text-rose-300 hover:text-rose-500 text-sm">
                         ✕
                       </button>
                     </div>

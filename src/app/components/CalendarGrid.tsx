@@ -8,9 +8,8 @@ interface Props {
 
 export default function CalendarGrid({ days, today, onDayClick }: Props) {
   const firstDay = new Date(days[0]?.date + "T12:00:00");
-  const startDow = firstDay.getDay(); // 0=Sun
+  const startDow = firstDay.getDay();
 
-  // Fill empty cells before month starts
   const blanks = Array.from({ length: startDow }, (_, i) => (
     <div key={`blank-${i}`} className="aspect-square" />
   ));
@@ -22,7 +21,7 @@ export default function CalendarGrid({ days, today, onDayClick }: Props) {
       {/* Day headers */}
       <div className="grid grid-cols-7 mb-1">
         {dayNames.map((d) => (
-          <div key={d} className="text-center text-xs text-gray-500 font-medium py-1">
+          <div key={d} className="text-center text-xs text-gray-400 font-medium py-1">
             {d}
           </div>
         ))}
@@ -35,22 +34,23 @@ export default function CalendarGrid({ days, today, onDayClick }: Props) {
           const isToday = d.date === today;
           const hasActivity = d.income > 0 || d.expenses > 0;
 
-          // Color based on fill level
-          let fillColor = "from-emerald-500/60 to-emerald-500/20";
-          let textColor = "text-emerald-400";
-          let bgColor = "bg-gray-800/50";
+          // Fill colors — light pastels
+          let fillColor = "from-emerald-300/50 to-emerald-200/20";
+          let textColor = "text-emerald-600";
+          let bgColor = "bg-emerald-50/60";
 
           if (d.fillPct <= 0) {
-            fillColor = "from-red-500/60 to-red-500/20";
-            textColor = "text-red-400";
-            bgColor = "bg-red-950/30";
+            fillColor = "from-rose-300/50 to-rose-200/20";
+            textColor = "text-rose-500";
+            bgColor = "bg-rose-50/50";
           } else if (d.fillPct < 25) {
-            fillColor = "from-amber-500/60 to-amber-500/20";
-            textColor = "text-amber-400";
-            bgColor = "bg-amber-950/20";
+            fillColor = "from-amber-300/50 to-amber-200/20";
+            textColor = "text-amber-600";
+            bgColor = "bg-amber-50/50";
           } else if (d.fillPct < 50) {
-            fillColor = "from-yellow-500/50 to-yellow-500/20";
-            textColor = "text-yellow-400";
+            fillColor = "from-yellow-300/40 to-yellow-200/20";
+            textColor = "text-yellow-600";
+            bgColor = "bg-yellow-50/40";
           }
 
           return (
@@ -59,12 +59,12 @@ export default function CalendarGrid({ days, today, onDayClick }: Props) {
               onClick={() => onDayClick(d.date)}
               className={`
                 relative aspect-square rounded-lg overflow-hidden border transition-all
-                hover:scale-105 hover:border-gray-500 active:scale-95
-                ${isToday ? "border-emerald-500 ring-1 ring-emerald-500/50" : "border-gray-700/50"}
+                hover:scale-105 hover:border-gray-300 active:scale-95
+                ${isToday ? "border-teal-400 ring-1 ring-teal-400/40" : "border-gray-200/80"}
                 ${bgColor}
               `}
             >
-              {/* Fill level — bottom-aligned liquid effect */}
+              {/* Fill level */}
               <div
                 className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t ${fillColor} transition-all duration-500`}
                 style={{ height: `${Math.max(0, Math.min(100, d.fillPct))}%` }}
@@ -72,7 +72,7 @@ export default function CalendarGrid({ days, today, onDayClick }: Props) {
 
               {/* Content */}
               <div className="relative z-10 flex flex-col items-center justify-center h-full p-0.5">
-                <span className={`text-sm font-bold ${isToday ? "text-white" : textColor}`}>
+                <span className={`text-sm font-bold ${isToday ? "text-teal-700" : textColor}`}>
                   {d.day}
                 </span>
                 {hasActivity && (

@@ -28,7 +28,7 @@ export default function Home() {
   if (!data) {
     return (
       <main className="flex-1 flex items-center justify-center">
-        <div className="animate-pulse text-gray-500">Loading...</div>
+        <div className="animate-pulse text-gray-400">Loading...</div>
       </main>
     );
   }
@@ -55,7 +55,6 @@ export default function Home() {
     });
   }
 
-  // Current month balance (last day)
   const endBalance = days.length > 0 ? days[days.length - 1].balance : data.startingBalance;
   const totalSpent = days.reduce((s, d) => s + d.expenses, 0);
 
@@ -63,12 +62,12 @@ export default function Home() {
     <main className="flex-1 p-4 max-w-2xl mx-auto w-full space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">
-          <span className="text-emerald-400">💰</span> MoneyFlow
+        <h1 className="text-2xl font-bold text-gray-800">
+          💰 MoneyFlow
         </h1>
         <button
           onClick={() => setShowSettings(true)}
-          className="bg-gray-800 hover:bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+          className="bg-white hover:bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm font-medium text-gray-600 shadow-sm transition-colors"
         >
           ⚙️ Setup
         </button>
@@ -76,27 +75,27 @@ export default function Home() {
 
       {/* Month Navigation */}
       <div className="flex items-center justify-between">
-        <button onClick={prevMonth} className="text-gray-400 hover:text-white px-3 py-1 text-xl">
+        <button onClick={prevMonth} className="text-gray-400 hover:text-gray-600 px-3 py-1 text-xl">
           ‹
         </button>
-        <h2 className="text-lg font-semibold">{monthName}</h2>
-        <button onClick={nextMonth} className="text-gray-400 hover:text-white px-3 py-1 text-xl">
+        <h2 className="text-lg font-semibold text-gray-700">{monthName}</h2>
+        <button onClick={nextMonth} className="text-gray-400 hover:text-gray-600 px-3 py-1 text-xl">
           ›
         </button>
       </div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-3 gap-2">
-        <div className="bg-gray-900 rounded-xl p-3 border border-gray-700">
-          <div className="text-xs text-gray-500">Available</div>
-          <div className="text-lg font-bold text-emerald-400">${totalAvailable.toLocaleString()}</div>
+        <div className="bg-white rounded-xl p-3 border border-gray-100 shadow-sm">
+          <div className="text-xs text-gray-400">Available</div>
+          <div className="text-lg font-bold text-teal-600">${totalAvailable.toLocaleString()}</div>
         </div>
-        <div className="bg-gray-900 rounded-xl p-3 border border-gray-700">
-          <div className="text-xs text-gray-500">Income</div>
-          <div className="text-lg font-bold text-emerald-400">+${monthIncome.toLocaleString()}</div>
+        <div className="bg-white rounded-xl p-3 border border-gray-100 shadow-sm">
+          <div className="text-xs text-gray-400">Income</div>
+          <div className="text-lg font-bold text-emerald-500">+${monthIncome.toLocaleString()}</div>
         </div>
-        <div className="bg-gray-900 rounded-xl p-3 border border-gray-700">
-          <div className="text-xs text-gray-500">Expenses</div>
+        <div className="bg-white rounded-xl p-3 border border-gray-100 shadow-sm">
+          <div className="text-xs text-gray-400">Expenses</div>
           <div className="text-lg font-bold text-rose-400">-${monthExpenses.toLocaleString()}</div>
         </div>
       </div>
@@ -105,16 +104,16 @@ export default function Home() {
       <CalendarGrid days={days} today={today} onDayClick={setSelectedDate} />
 
       {/* Footer Balance */}
-      <div className="bg-gray-900 rounded-xl p-4 border border-gray-700">
+      <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
         <div className="flex justify-between items-center">
           <div>
-            <div className="text-xs text-gray-500">End of month balance</div>
-            <div className={`text-2xl font-bold ${endBalance >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
+            <div className="text-xs text-gray-400">End of month balance</div>
+            <div className={`text-2xl font-bold ${endBalance >= 0 ? "text-teal-600" : "text-rose-500"}`}>
               ${endBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </div>
           </div>
           <div className="text-right">
-            <div className="text-xs text-gray-500">Spent this month</div>
+            <div className="text-xs text-gray-400">Spent this month</div>
             <div className="text-lg font-semibold text-rose-400">
               ${totalSpent.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </div>
@@ -123,7 +122,7 @@ export default function Home() {
       </div>
 
       {/* Legend */}
-      <div className="flex justify-center gap-4 text-xs text-gray-500 pb-4">
+      <div className="flex justify-center gap-4 text-xs text-gray-400 pb-4">
         <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-400" /> Income</span>
         <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-rose-400" /> Expense</span>
         <span>Tap a day to log spending</span>
