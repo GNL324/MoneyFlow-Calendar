@@ -88,11 +88,11 @@ export default function Home() {
       <div className="grid grid-cols-4 gap-2">
         <div className="bg-white rounded-xl p-3 border border-gray-100 shadow-sm">
           <div className="text-xs text-gray-400">Available</div>
-          <div className="text-lg font-bold text-teal-600">${totalAvailable.toLocaleString()}</div>
+          <div className="text-lg font-bold text-green-600">${totalAvailable.toLocaleString()}</div>
         </div>
         <div className="bg-white rounded-xl p-3 border border-gray-100 shadow-sm">
           <div className="text-xs text-gray-400">Income</div>
-          <div className="text-lg font-bold text-emerald-500">+${monthIncome.toLocaleString()}</div>
+          <div className="text-lg font-bold text-green-500">+${monthIncome.toLocaleString()}</div>
         </div>
         <div className="bg-white rounded-xl p-3 border border-gray-100 shadow-sm">
           <div className="text-xs text-blue-400">Planned</div>
@@ -112,7 +112,7 @@ export default function Home() {
         <div className="flex justify-between items-center">
           <div>
             <div className="text-xs text-gray-400">End of month balance</div>
-            <div className={`text-2xl font-bold ${endBalance >= 0 ? "text-teal-600" : "text-rose-500"}`}>
+            <div className={`text-2xl font-bold ${endBalance >= 0 ? "text-green-600" : "text-rose-500"}`}>
               ${endBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </div>
           </div>
@@ -127,14 +127,19 @@ export default function Home() {
 
       {/* Legend */}
       <div className="flex flex-wrap justify-center gap-3 text-xs text-gray-400 pb-4">
-        <span className="flex items-center gap-1"><span className="w-3 h-2 rounded-sm bg-green-600" /> Full</span>
-        <span className="flex items-center gap-1"><span className="w-3 h-2 rounded-sm bg-emerald-500" /> Good</span>
-        <span className="flex items-center gap-1"><span className="w-3 h-2 rounded-sm bg-amber-500" /> Low</span>
-        <span className="flex items-center gap-1"><span className="w-3 h-2 rounded-sm bg-rose-500" /> Empty</span>
+        <span className="flex items-center gap-1"><span className="w-3 h-2 rounded-sm bg-green-500" /> Full</span>
+        <span className="flex items-center gap-1"><span className="w-3 h-2 rounded-sm bg-emerald-400" /> Good</span>
+        <span className="flex items-center gap-1"><span className="w-3 h-2 rounded-sm bg-amber-400" /> Low</span>
+        <span className="flex items-center gap-1"><span className="w-3 h-2 rounded-sm bg-red-400" /> Empty</span>
         <span className="mx-1 text-gray-300">|</span>
-        <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> Income</span>
+        <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-green-400" /> Income</span>
         <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-blue-400" /> Planned</span>
         <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-rose-400" /> Unplanned</span>
+      </div>
+
+      {/* Version */}
+      <div className="text-center pb-2">
+        <span className="text-[10px] text-gray-300 font-mono">v1.0.0</span>
       </div>
 
       {/* Modals */}

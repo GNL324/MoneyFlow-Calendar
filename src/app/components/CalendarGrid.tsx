@@ -37,7 +37,7 @@ export default function CalendarGrid({ days, today, onDayClick }: Props) {
 
           // Green zones: 100% = fully funded for planned expenses
           // As money is spent, bar drains down through color zones
-          let fillColor = "bg-emerald-500";
+          let fillColor = "bg-emerald-400";
           let bgTint = "";
           let dayTextColor = "text-gray-700";
 
@@ -48,27 +48,27 @@ export default function CalendarGrid({ days, today, onDayClick }: Props) {
             dayTextColor = "text-rose-600";
           } else if (pct < 15) {
             // Almost empty — danger red
-            fillColor = "bg-red-500";
+            fillColor = "bg-red-400";
             bgTint = "bg-red-50/40";
             dayTextColor = "text-red-700";
           } else if (pct < 35) {
             // Low — amber warning
-            fillColor = "bg-amber-500";
+            fillColor = "bg-amber-400";
             bgTint = "bg-amber-50/30";
             dayTextColor = "text-amber-800";
           } else if (pct < 65) {
             // Moderate — yellow-green
-            fillColor = "bg-emerald-500";
+            fillColor = "bg-emerald-400";
             bgTint = "bg-emerald-50/20";
             dayTextColor = "text-gray-800";
           } else if (pct < 90) {
             // Good — solid green
-            fillColor = "bg-green-500";
+            fillColor = "bg-green-400";
             bgTint = "bg-green-50/20";
             dayTextColor = "text-gray-800";
           } else {
             // Flush — rich green, fully funded
-            fillColor = "bg-green-600";
+            fillColor = "bg-green-500";
             bgTint = "bg-green-50/30";
             dayTextColor = "text-white";
           }
@@ -88,7 +88,7 @@ export default function CalendarGrid({ days, today, onDayClick }: Props) {
               className={`
                 relative aspect-square rounded-lg overflow-hidden border transition-all
                 hover:scale-105 hover:border-gray-300 active:scale-95
-                ${isToday ? "border-teal-400 ring-1 ring-teal-400/40" : "border-gray-200/80"}
+                ${isToday ? "border-green-400 ring-1 ring-green-400/40" : "border-gray-200/80"}
                 ${bgTint}
               `}
             >
@@ -105,12 +105,12 @@ export default function CalendarGrid({ days, today, onDayClick }: Props) {
 
               {/* Content */}
               <div className="relative z-10 flex flex-col items-center justify-center h-full p-0.5">
-                <span className={`text-sm font-bold ${isToday ? "text-teal-700" : dayTextColor}`}>
+                <span className={`text-sm font-bold ${isToday ? "text-green-700" : dayTextColor}`}>
                   {d.day}
                 </span>
                 {(hasPlanned || hasUnplanned || d.income > 0) && (
                   <div className="flex gap-0.5 mt-0.5">
-                    {d.income > 0 && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 ring-1 ring-white/40" />}
+                    {d.income > 0 && <span className="w-1.5 h-1.5 rounded-full bg-green-400 ring-1 ring-white/40" />}
                     {hasPlanned && <span className="w-1.5 h-1.5 rounded-full bg-blue-400 ring-1 ring-white/40" />}
                     {hasUnplanned && <span className="w-1.5 h-1.5 rounded-full bg-rose-400 ring-1 ring-white/40" />}
                   </div>
