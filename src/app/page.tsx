@@ -122,10 +122,14 @@ export default function Home() {
       </div>
 
       {/* Legend */}
-      <div className="flex justify-center gap-4 text-xs text-gray-400 pb-4">
-        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-400" /> Income</span>
-        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-rose-400" /> Expense</span>
-        <span>Tap a day to log spending</span>
+      <div className="flex flex-wrap justify-center gap-3 text-xs text-gray-400 pb-4">
+        <span className="flex items-center gap-1"><span className="w-3 h-2 rounded-sm bg-green-600" /> Flush</span>
+        <span className="flex items-center gap-1"><span className="w-3 h-2 rounded-sm bg-emerald-500" /> Good</span>
+        <span className="flex items-center gap-1"><span className="w-3 h-2 rounded-sm bg-amber-500" /> Low</span>
+        <span className="flex items-center gap-1"><span className="w-3 h-2 rounded-sm bg-rose-500" /> Empty</span>
+        <span className="mx-1 text-gray-300">|</span>
+        <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> Income</span>
+        <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-rose-400" /> Expense</span>
       </div>
 
       {/* Modals */}
