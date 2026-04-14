@@ -11,10 +11,19 @@ interface Props {
 }
 
 type Tab = "income" | "expenses" | "settings";
+type Frequency = Income["frequency"];
+const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 export default function SettingsPanel({ data, onChange, onClose }: Props) {
   const [tab, setTab] = useState<Tab>("settings");
-  const [newIncome, setNewIncome] = useState({ label: "", amount: "", day: "1", type: "recurring" as "recurring" | "one-time" });
+  const [newIncome, setNewIncome] = useState({
+    label: "",
+    amount: "",
+    frequency: "monthly" as Frequency,
+    day: "1",
+    weekday: "1", // Monday default
+    startWeek: "0", // parity offset for biweekly
+  });
   const [newExpense, setNewExpense] = useState({ label: "", amount: "", day: "1", type: "recurring" as "recurring" | "one-time" });
   const [balance, setBalance] = useState(String(data.startingBalance));
 
@@ -30,11 +39,12 @@ export default function SettingsPanel({ data, onChange, onClose }: Props) {
       id: uid(),
       label: newIncome.label,
       amount: parseFloat(newIncome.amount),
-      type: newIncome.type,
-      day: newIncome.type === "recurring" ? parseInt(newIncome.day) : undefined,
+      frequency: newIncome.frequency,
+      day: newIncome.frequency === "monthly" ? parseInt(newIncome.day) : (newIncome.frequency === "biweekly" ? parseInt(newIncome.startWeek) : undefined),
+      weekday: (newIncome.frequency === "weekly" || newIncome.frequency === "biweekly") ? parseInt(newIncome.weekday) : undefined,
     };
     onChange({ ...data, incomes: [...data.incomes, income] });
-    setNewIncome({ label: "", amount: "", day: "1", type: "recurring" });
+    setNewIncome({ label: "", amount: "", frequency: "monthly", day: "1", weekday: "1", startWeek: "0" });
   }
 
   function addExpense() {
@@ -62,16 +72,34 @@ export default function SettingsPanel({ data, onChange, onClose }: Props) {
     onChange({ ...data, startingBalance: parseFloat(balance) || 0 });
   }
 
+  /** Format income frequency for display */
+  function freqLabel(inc: Income): string {
+    switch (inc.frequency) {
+      case "weekly":
+        return `Every ${WEEKDAYS[inc.weekday ?? 1]}`;
+      case "biweekly":
+        return `Biweekly ${WEEKDAYS[inc.weekday ?? 1]}`;
+      case "monthly":
+        return `Day ${inc.day}`;
+      case "one-time":
+        return "One-time";
+      default:
+        // Legacy "recurring" type from migrated data
+        if ((inc as any).type === "recurring") return `Day ${inc.day} (monthly)`;
+        return "One-time";
+    }
+  }
+
   return (
     <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto border border-gray-200 shadow-xl">
-        <div className="flex items-center justify-between p-4 border-b border-gray-100">
+        <div className="sticky top-0 bg-white rounded-t-2xl flex items-center justify-between p-4 border-b border-gray-100 z-10">
           <h2 className="text-lg font-bold text-gray-800">MoneyFlow Settings</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-gray-100">
+        <div className="flex border-b border-gray-100 sticky top-[57px] bg-white z-10">
           {tabs.map((t) => (
             <button
               key={t.key}
@@ -121,18 +149,38 @@ export default function SettingsPanel({ data, onChange, onClose }: Props) {
                     value={newIncome.amount}
                     onChange={(e) => setNewIncome({ ...newIncome, amount: e.target.value })}
                     className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800 placeholder-gray-400"
-                    placeholder="Amount"
+                    placeholder="Amount per paycheck"
                   />
                   <select
-                    value={newIncome.type}
-                    onChange={(e) => setNewIncome({ ...newIncome, type: e.target.value as "recurring" | "one-time" })}
+                    value={newIncome.frequency}
+                    onChange={(e) => setNewIncome({ ...newIncome, frequency: e.target.value as Frequency })}
                     className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800"
                   >
-                    <option value="recurring">Monthly</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="biweekly">Biweekly</option>
+                    <option value="monthly">Monthly</option>
                     <option value="one-time">One-time</option>
                   </select>
                 </div>
-                {newIncome.type === "recurring" && (
+
+                {/* Show day-of-week selector for weekly/biweekly */}
+                {(newIncome.frequency === "weekly" || newIncome.frequency === "biweekly") && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-gray-500">Payday:</span>
+                    <select
+                      value={newIncome.weekday}
+                      onChange={(e) => setNewIncome({ ...newIncome, weekday: e.target.value })}
+                      className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800"
+                    >
+                      {WEEKDAYS.map((name, i) => (
+                        <option key={i} value={i}>{name}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
+                {/* Show day-of-month selector for monthly */}
+                {newIncome.frequency === "monthly" && (
                   <div className="flex items-center gap-2">
                     <span className="text-sm text-gray-500">Day of month:</span>
                     <input
@@ -145,6 +193,7 @@ export default function SettingsPanel({ data, onChange, onClose }: Props) {
                     />
                   </div>
                 )}
+
                 <button onClick={addIncome} className="w-full bg-emerald-500 hover:bg-emerald-600 py-2 rounded-lg font-medium text-white shadow-sm">
                   + Add Income
                 </button>
@@ -159,7 +208,7 @@ export default function SettingsPanel({ data, onChange, onClose }: Props) {
                         <span className="text-gray-700">{inc.label}</span>
                         <span className="text-emerald-500 ml-2">${inc.amount.toLocaleString()}</span>
                         <span className="text-gray-400 ml-2 text-xs">
-                          {inc.type === "recurring" ? `Day ${inc.day}` : "One-time"}
+                          {freqLabel(inc)}
                         </span>
                       </div>
                       <button onClick={() => removeIncome(inc.id)} className="text-rose-300 hover:text-rose-500 text-sm">

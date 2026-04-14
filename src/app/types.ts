@@ -2,10 +2,16 @@ export interface Income {
   id: string;
   label: string;
   amount: number;
-  type: "recurring" | "one-time";
-  /** Day of month for recurring, specific date for one-time (YYYY-MM-DD) */
+  /** Frequency of income */
+  frequency: "weekly" | "biweekly" | "monthly" | "one-time";
+  /** Day of month for monthly (1-31) */
   day?: number;
+  /** Day of week for weekly/biweekly (0=Sun, 1=Mon, ..., 6=Sat) */
+  weekday?: number;
+  /** Specific date for one-time (YYYY-MM-DD) */
   date?: string;
+  /** @deprecated Legacy field for migration from old "recurring" type */
+  type?: string;
 }
 
 export interface Expense {
