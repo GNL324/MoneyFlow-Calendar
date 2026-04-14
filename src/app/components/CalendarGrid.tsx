@@ -34,23 +34,23 @@ export default function CalendarGrid({ days, today, onDayClick }: Props) {
           const isToday = d.date === today;
           const hasActivity = d.income > 0 || d.expenses > 0;
 
-          // Fill colors — light pastels
-          let fillColor = "from-emerald-300/50 to-emerald-200/20";
-          let textColor = "text-emerald-600";
-          let bgColor = "bg-emerald-50/60";
+          // Fill colors — bold and visible
+          let fillColor = "from-emerald-500 to-emerald-300";
+          let textColor = "text-emerald-700";
+          let bgColor = "bg-white";
 
           if (d.fillPct <= 0) {
-            fillColor = "from-rose-300/50 to-rose-200/20";
-            textColor = "text-rose-500";
-            bgColor = "bg-rose-50/50";
+            fillColor = "from-rose-500 to-rose-300";
+            textColor = "text-rose-600";
+            bgColor = "bg-rose-50";
           } else if (d.fillPct < 25) {
-            fillColor = "from-amber-300/50 to-amber-200/20";
-            textColor = "text-amber-600";
+            fillColor = "from-amber-500 to-amber-300";
+            textColor = "text-amber-700";
             bgColor = "bg-amber-50/50";
           } else if (d.fillPct < 50) {
-            fillColor = "from-yellow-300/40 to-yellow-200/20";
-            textColor = "text-yellow-600";
-            bgColor = "bg-yellow-50/40";
+            fillColor = "from-yellow-500 to-yellow-300";
+            textColor = "text-yellow-700";
+            bgColor = "bg-yellow-50/30";
           }
 
           return (
@@ -67,7 +67,7 @@ export default function CalendarGrid({ days, today, onDayClick }: Props) {
               {/* Fill level */}
               <div
                 className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t ${fillColor} transition-all duration-500`}
-                style={{ height: `${Math.max(0, Math.min(100, d.fillPct))}%` }}
+                style={{ height: `${d.fillPct > 0 ? Math.max(8, Math.min(100, d.fillPct)) : 0}%` }}
               />
 
               {/* Content */}
